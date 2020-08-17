@@ -9,11 +9,12 @@ import {
   Typography,
 } from "@material-ui/core";
 import useStyles from './styles';
+import classNames from 'classnames';
 
-const NewsCard = ({article:{description,publishedAt,source,title,url,urlToImage},i}) => {
+const NewsCard = ({article:{description,publishedAt,source,title,url,urlToImage},i,activeArticle}) => {
     const classes=useStyles();
   return (
-    <Card className={classes.card}>
+    <Card className={classNames(classes.card,activeArticle===i?classes.activeCard:null)}>
       <CardActionArea href={url} target="_blank">
         <CardMedia
           className={classes.media}
