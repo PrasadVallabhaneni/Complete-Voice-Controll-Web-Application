@@ -6,6 +6,9 @@ export default makeStyles({
     width: "100%",
     margin: 0,
   },
+  weather:{
+
+  },
   logo1: {
     height:'20vh',
     width:'100%',
