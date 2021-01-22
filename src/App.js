@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import alanBtn from "@alan-ai/alan-sdk-web";
 import NewsCards from "./components/newscards/NewsCards";
+import { Grid, Grow, Typography } from "@material-ui/core";
 // import classes from "*.module.css";
 import useStyles from "./styles";
 import wordsToNumbers from "words-to-numbers";
@@ -17,9 +18,10 @@ const App = () => {
   useEffect(() => {
     alanBtn({
       key: alankey,
-      onCommand: ({ command, articles, number, weatherData }) => {
+      onCommand: ({ command, articles, number, response }) => {
         if (command === "newHeadlines") {
           setNewsArticles(articles);
+          setActiveArticle(-1)
         } else if (command === "highlight") {
           setActiveArticle((prevActiveArticle) => prevActiveArticle + 1);
         } else if (command === "open") {
@@ -28,11 +30,17 @@ const App = () => {
               ? wordsToNumbers(number, { fuzzy: true })
               : number;
           const article = articles[parsedNumber - 1];
-          window.open(article.url, "_blank");
-          alanBtn().playText("Opening...");
+         if (parsedNumber > articles.length) {
+           alanBtn().playText("Please try that again...");
+         } else if (article) {
+           window.open(article.url, "_blank");
+           alanBtn().playText("Opening...");
+         } else {
+           alanBtn().playText("Please try that again...");
+         }
         } else if (command === "showWeather") {
-          setWeatherReport(weatherData);
-          console.log(weatherData);
+          setWeatherReport(response);
+          console.log(response);
         }
       },
     });
@@ -40,6 +48,24 @@ const App = () => {
   return (
     <div>
       <div className={classes.logoContainer}>
+        {newsArticles.length ? (
+          <div className={classes.infoContainer}>
+            <div className={classes.card}>
+              <Typography variant="h5" component="h2">
+                Try saying: <br />
+                <br />
+                Open article number [4]
+              </Typography>
+            </div>
+            <div className={classes.card}>
+              <Typography variant="h5" component="h2">
+                Try saying: <br />
+                <br />
+                Go back
+              </Typography>
+            </div>
+          </div>
+        ) : null}
         <img
           src="https://files.schudio.com/whitefield/images/news/Latest_news.jpg"
           className={classes.alanLogo}
